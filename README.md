@@ -3,7 +3,7 @@ All the projects in this folder run with python3.
 
 ## Project-1
 The first assignment consists in building a script that reads some .txt file (in a plain text format) to count the letters in it. 
-'''
+```
 Module: basic Python
 Assignment #1 (September 30, 2019)
 
@@ -29,5 +29,5 @@ book.
   that do not pertain to the book (e.g., preamble and license)
 - [optional] the program should have an option to print out the basic book
 stats (e.g., number of characters, number of words, number of lines, etc.)
-'''
+```
 
