@@ -13,6 +13,10 @@ class Particle:
 			- charge (in e)
 			- momentum [optional] in (MeV/c)
 			"""
+		if mass < 0:
+			raise Exception('Cannot set a negative value for the mass! '
+							'"{}" creation failed '
+							.format(name))
 		self.name = name
 		self._mass = mass
 		self._charge = charge
@@ -40,7 +44,7 @@ class Particle:
 	@momentum.setter
 	def momentum(self, value):
 		if (value < 0):
-			print('Cannot set the energy value inferior to zero')
+			print('Cannot set the energy value less than zero')
 			print('The momentum will be set to 0!')
 			self._momentum = 0
 		else:
@@ -48,29 +52,49 @@ class Particle:
 
 	@property
 	def energy(self):
+		"""
+
+		"""
 		return math.sqrt((self.momentum * LIGHT_SPEED) ** 2
 						 + (self.mass * LIGHT_SPEED ** 2) ** 2)
 
 	@energy.setter
 	def energy(self, value):
+		"""
+		PLEASE NOTE: setting the energy will change the momentum
+		consistently; obviously there's no need to change the beta
+		value, because beta is not a class member. Any change in the
+		instance will bring a change *only* in the class members. Same
+		happens for the beta setter.
+		"""
 		if (value < self.mass):
 			print('Cannot set the energy value smaller '
 				  'than its mass ({})!'.format(self.mass))
 		else:
 			self.momentum = (math.sqrt((value ** 2 -
-									(self.mass * LIGHT_SPEED ** 2) ** 2))) / \
+							(self.mass * LIGHT_SPEED ** 2) ** 2))) / \
 							LIGHT_SPEED ** 2
+			# self.momentum = (self.beta * LIGHT_SPEED) / value
 
 	@property
 	def beta(self):
+		"""
+		PLEASE NOTE: using the energy to evaluate beta is a bit tricky.
+		The code is working because the energy is evaluated using only
+		the	class members. If, for example, the energy were evaluated
+		using beta, I think it would not work...? But this
+		is also the easiest way to evaluate beta, so..
+		"""
 		if not (self.energy > 0.):
 			return 0
 		else:
 			return LIGHT_SPEED * self.momentum/self.energy
 
-
 	@beta.setter
 	def beta(self, value):
+		"""
+		See energy setter for detail
+		"""
 		if (value < 0.) or (value >1.):
 			print('Beta must be in the [0., 1.] range')
 			return
@@ -79,6 +103,11 @@ class Particle:
 			return
 		self.momentum = LIGHT_SPEED * value * self.mass / \
 						math.sqrt(1 - value**2)
+
+
+
+
+
 
 class Proton(Particle):
 	"""Class describing a proton"""
@@ -119,3 +148,5 @@ if __name__ == '__main__':
 	print('Alpha particle:')
 	alpha = Alpha(300)
 	alpha.energy = 2000
+
+	particle2 = Particle('test_particle_2', mass=-3, charge=-2, momentum=100)
